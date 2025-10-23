@@ -6,6 +6,7 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -15,7 +16,6 @@ import (
 	"strings"
 
 	"github.com/gonuts/commander"
-	"github.com/gonuts/flag"
 
 	"github.com/go-python/gopy/bind"
 )
@@ -58,17 +58,17 @@ func gopyRunCmdBuild(cmdr *commander.Command, args []string) error {
 	}
 
 	cfg := NewBuildCfg()
-	cfg.OutputDir = cmdr.Flag.Lookup("output").Value.Get().(string)
-	cfg.Name = cmdr.Flag.Lookup("name").Value.Get().(string)
-	cfg.Main = cmdr.Flag.Lookup("main").Value.Get().(string)
-	cfg.VM = cmdr.Flag.Lookup("vm").Value.Get().(string)
-	cfg.PkgPrefix = cmdr.Flag.Lookup("package-prefix").Value.Get().(string)
-	cfg.RenameCase = cmdr.Flag.Lookup("rename").Value.Get().(bool)
-	cfg.Symbols = cmdr.Flag.Lookup("symbols").Value.Get().(bool)
-	cfg.NoWarn = cmdr.Flag.Lookup("no-warn").Value.Get().(bool)
-	cfg.NoMake = cmdr.Flag.Lookup("no-make").Value.Get().(bool)
-	cfg.DynamicLinking = cmdr.Flag.Lookup("dynamic-link").Value.Get().(bool)
-	cfg.BuildTags = cmdr.Flag.Lookup("build-tags").Value.Get().(string)
+	cfg.OutputDir = cmdr.Flag.Lookup("output").Value.String()
+	cfg.Name = cmdr.Flag.Lookup("name").Value.String()
+	cfg.Main = cmdr.Flag.Lookup("main").Value.String()
+	cfg.VM = cmdr.Flag.Lookup("vm").Value.String()
+	cfg.PkgPrefix = cmdr.Flag.Lookup("package-prefix").Value.String()
+	cfg.RenameCase = cmdr.Flag.Lookup("rename").Value.String() == "true"
+	cfg.Symbols = cmdr.Flag.Lookup("symbols").Value.String() == "true"
+	cfg.NoWarn = cmdr.Flag.Lookup("no-warn").Value.String() == "true"
+	cfg.NoMake = cmdr.Flag.Lookup("no-make").Value.String() == "true"
+	cfg.DynamicLinking = cmdr.Flag.Lookup("dynamic-link").Value.String() == "true"
+	cfg.BuildTags = cmdr.Flag.Lookup("build-tags").Value.String()
 
 	bind.NoWarn = cfg.NoWarn
 	bind.NoMake = cfg.NoMake
@@ -93,6 +93,8 @@ func gopyRunCmdBuild(cmdr *commander.Command, args []string) error {
 // exe = executable mode to build an executable instead of a library
 // mode = gen, build, pkg, exe
 func runBuild(mode bind.BuildMode, cfg *BuildCfg) error {
+	os.Setenv("GOWORK", "off")
+
 	var err error
 	cfg.OutputDir, err = genOutDir(cfg.OutputDir)
 	if err != nil {

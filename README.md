@@ -306,4 +306,3 @@ When you want to contribute a patch or some code to `gopy`, please send a pull
 request against the `gopy` issue tracker **AND** a pull request against
 [go-python/license](https://github.com/go-python/license) adding yourself to the
 `AUTHORS` and `CONTRIBUTORS` files.
-

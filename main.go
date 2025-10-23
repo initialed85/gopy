@@ -5,14 +5,16 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"log"
 	"os"
 	"path"
 
+	"flag"
+
 	"github.com/gonuts/commander"
-	"github.com/gonuts/flag"
 	"github.com/pkg/errors"
 
 	"github.com/go-python/gopy/bind"
@@ -59,7 +61,7 @@ func run(args []string) error {
 	}
 
 	appArgs := app.Flag.Args()
-	err = app.Dispatch(appArgs)
+	err = app.Dispatch(context.Background(), appArgs)
 	if err != nil {
 		return fmt.Errorf("error dispatching command: %v", err)
 	}
